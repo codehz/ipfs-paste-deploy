@@ -1,0 +1,45 @@
+doctype html
+html(lang="en")
+  include /includes/head.pug
+  +jslink("default")
+  +csslink("show")
+  +script("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.0.1/build/highlight.min.js")
+  +script("https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.8.0/dist/highlightjs-line-numbers.min.js")
+  +jslink("show")
+  title Paste #{hash}
+
+  header
+    .panel.panel-left
+      a(href="/") Paste
+    .panel.panel-right
+      a(href=`https://gateway.ipfs.io/ipfs/${hash}` target="_blank") View it in IPFS.io
+
+  section
+    each item in files
+      .card(data-file-type=item.type)
+        case item.type
+          when "file"
+            .card-header
+              .filename=item.filename
+            if item.inline
+              if item.ext
+                .card-body.overflow-x
+                  code.content(class=`language-${item.ext}`)=item.content
+              else
+                .card-body.overflow-x
+                  code.content(class=`nohighlight`)=item.content
+            else
+              if item.mime.startsWith("image/")
+                .card-body.overflow-x.image
+                  img(src=`https://gateway.ipfs.io/ipfs/${item.content}`)
+              else
+                .card-body.link
+                  span file size: #{item.size}
+                  a(href=`https://gateway.ipfs.io/ipfs/${item.content}` target="_blank" type=item.mime) Open in new tab
+          when "directory"
+          when "symlink"
+            .card-header
+              .filename=item.filename
+            .card-body.link
+              a(href=`/ipfs/${item.target}`) Open #{item.type}
+  .placeholder

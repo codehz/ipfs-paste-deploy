@@ -1,0 +1,35 @@
+doctype html
+html(lang="en")
+  include /includes/head.pug
+  +script("https://unpkg.com/ipfs-http-client-lite/dist/index.min.js")
+  +jslink("default")
+  +jslink("index")
+  +csslink("index")
+  title Code Paste
+
+  header
+    .panel.panel-left
+      .title Code Paste
+    .panel.panel-right#backend
+      select#backend-selector(name=backend)
+        each server in servers
+          option(value=server.url)= server.name
+
+  dialog#dialog
+    form(method="dialog")
+      h2 Failed to upload
+      p.reason
+      menu
+        button(value="default") ok
+
+  template#content-template
+    .card
+      .card-header
+        input.title.filename(placeholder="file name" value="paste.txt")
+        .btn-delete(tabindex="-1" title="Remove this card" role="button")
+      .card-body.editarea(contenteditable="plaintext-only" role="textbox" title="file contents")
+  section#content(role="Main")
+  footer
+    .btn.btn-more#more more
+    .btn.btn-primary.btn-upload#upload upload
+  .placeholder
